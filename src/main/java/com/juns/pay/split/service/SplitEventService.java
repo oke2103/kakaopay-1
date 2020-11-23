@@ -7,7 +7,6 @@ import com.juns.pay.common.ResultResponse;
 import com.juns.pay.common.enumeration.ResultEnum;
 import com.juns.pay.room.model.Room;
 import com.juns.pay.split.controller.request.CreateSplitEventRequest;
-import com.juns.pay.split.controller.response.SplitEventResponse;
 import com.juns.pay.split.domain.SplitEventDTO;
 import com.juns.pay.split.domain.SplitEventTokenDTO;
 import com.juns.pay.split.enumeration.SplitEventStatus;
@@ -35,7 +34,7 @@ public class SplitEventService {
     @Autowired
     private UserAssetService userAssetService;
 
-    public ResponseEntity splitRandomly(User user, Room room, CreateSplitEventRequest request, long currentTime) {
+    public String splitRandomly(User user, Room room, CreateSplitEventRequest request, long currentTime) {
 
         String token = RandomTokenGenerationUtil.generateToken(Policy.SPLITEVENT_TOKEN_LENGTH);
         this.userAssetService.send(user, request.getAmount());
@@ -50,8 +49,8 @@ public class SplitEventService {
             .token(token)
             .build();
         this.splitEventRepository.save(splitEvent);
-        final SplitEventResponse response = new SplitEventResponse(ResultEnum.OK, token);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return token;
+        
     }
 
     public ResponseEntity historySplitEvent(User user, SplitEventTokenDTO request, long currentTime) {

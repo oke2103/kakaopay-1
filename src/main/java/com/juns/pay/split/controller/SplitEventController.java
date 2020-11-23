@@ -6,6 +6,7 @@ import com.juns.pay.common.enumeration.ResultEnum;
 import com.juns.pay.room.model.Room;
 import com.juns.pay.room.service.RoomService;
 import com.juns.pay.split.controller.request.CreateSplitEventRequest;
+import com.juns.pay.split.controller.response.SplitEventResponse;
 import com.juns.pay.split.domain.SplitEventTokenDTO;
 import com.juns.pay.split.service.SplitEventService;
 import com.juns.pay.split.service.UserSplitEventService;
@@ -56,7 +57,9 @@ public class SplitEventController {
             final DefaultResponse response = new DefaultResponse(ResultEnum.ROOM_NOT_EXIST);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        return this.splitEventService.splitRandomly(user, room, request, currentTime);
+        String token = this.splitEventService.splitRandomly(user, room, request, currentTime);
+        final SplitEventResponse response = new SplitEventResponse(ResultEnum.OK, token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

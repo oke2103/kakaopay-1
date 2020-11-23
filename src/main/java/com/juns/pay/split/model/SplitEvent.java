@@ -154,7 +154,7 @@ public class SplitEvent implements Serializable {
     public SplitEventDTO toDTO() {
         return SplitEventDTO.builder()
             .amount(this.amount)
-            .receiveAmount(this.getRemainAmount())
+            .receiveAmount(this.amount - this.getRemainAmount())
             .timeCreate(this.timeCreate)
             .userSplitEvents(ModelMapperUtil.mapAll(this.userSplitEvents, UserSplitEventDTO.class))
             .build();
