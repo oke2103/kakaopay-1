@@ -72,7 +72,13 @@
 3. 뿌리기 시, 3자리의 임의의 토큰 발행한다.
 
    사용자 ID와 대화방 ID과 Unique Key를 생성하여, 중복 허용하지 않도록 설정
-
+   
+## ERD
+++++
+<p align="center">
+  <img width="460" height="300" src="https://user-images.githubusercontent.com/74887350/99963470-2f502e80-2dd5-11eb-89dc-e8f2889021c5.png">
+</p>
+++++
 
 ## 뿌리기 API
 
