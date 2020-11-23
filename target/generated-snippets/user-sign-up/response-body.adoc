@@ -1,4 +1,0 @@
-[source,options="nowrap"]
-----
-{"resultCode":0,"resultMessage":"ok","detail":""}
-----

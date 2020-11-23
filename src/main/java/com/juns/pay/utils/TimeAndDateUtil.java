@@ -6,7 +6,7 @@ public class TimeAndDateUtil {
 
     public static final int A_DAY_SEC = 60 * 60 * 24;
 
-    public static long getCurrentTimeMiliSec() {
+    public static long getCurrentTimeMilliSec() {
         return getCurrentTime(TimeUnit.MILLISECONDS);
     }
 

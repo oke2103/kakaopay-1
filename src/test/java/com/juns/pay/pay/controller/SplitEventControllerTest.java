@@ -18,8 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.juns.pay.common.HttpHeaderKeyDefine;
-import com.juns.pay.split.controller.request.CreateSplitEventRequest;
-import com.juns.pay.split.domain.SplitEventTokenDTO;
+import com.juns.pay.controller.split.request.CreateSplitEventRequest;
+import com.juns.pay.domain.split.SplitEventTokenDTO;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Rule;
@@ -58,7 +58,7 @@ public class SplitEventControllerTest {
      *
      * response
      * @param double token : 이벤트 고유 토큰
-     * {@link com.juns.pay.split.controller.SplitEventController}
+     * {@link com.juns.pay.controller.split.SplitEventController}
      * */
     @Before
     public void setUp() {
