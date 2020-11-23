@@ -35,13 +35,45 @@ public class ReceiveServiceTest extends ServiceTest {
         assert response.getReceiveAmount() >= 0L;
     }
 
+
+    /*
+     * 뿌리기 건당 한번만 받을 수 있음
+     * 뿌리기 User : fromUser
+     * 받기 User : toUser
+     * */
+    @Test
+    public void test_receive_fail_1() {
+        long currentTime = TimeAndDateUtil.getCurrentTimeMilliSec();
+        long availableTime = TimeAndDateUtil.getCurrentTimeMilliSec();
+
+        final String token = this.splitEventService.splitRandomly(this.fromUser, this.room, new CreateSplitEventRequest(1000, 3), currentTime);
+
+        // first
+        ResponseEntity firstResponseEntity = this.userSplitEventService.receiveSplitRandomly(this.toUser, this.room, new SplitEventTokenDTO(token), availableTime);
+
+        assertThat(firstResponseEntity.getBody()).isInstanceOf(ReceiveSplitEventResponse.class);
+        ReceiveSplitEventResponse firstResponse = (ReceiveSplitEventResponse) firstResponseEntity.getBody();
+
+        assert firstResponse != null;
+        assert firstResponse.getResultCode() == ResultEnum.OK.getCode();
+        assert firstResponse.getReceiveAmount() >= 0L;
+
+        // second
+        ResponseEntity secondResponseEntity = this.userSplitEventService.receiveSplitRandomly(this.toUser, this.room, new SplitEventTokenDTO(token), availableTime);
+        assertThat(secondResponseEntity.getBody()).isInstanceOf(DefaultResponse.class);
+        DefaultResponse secondResponse = (DefaultResponse) secondResponseEntity.getBody();
+
+        assert secondResponse != null;
+        assert secondResponse.getResultCode() == ResultEnum.SPLITEVENT_ALREADY_APPLY.getCode();
+    }
+
     /*
      * 자신이 뿌리기한 건은 자신이 받을 수 없음
      * 뿌리기 User : fromUser
      * 받기 User : fromUser
      * */
     @Test
-    public void testReceive_fail_1() {
+    public void test_receive_fail_2() {
         long currentTime = TimeAndDateUtil.getCurrentTimeMilliSec();
         long availableTime = TimeAndDateUtil.getCurrentTimeMilliSec();
 
@@ -55,74 +87,12 @@ public class ReceiveServiceTest extends ServiceTest {
     }
 
     /*
-     * 뿌리기 건당 한번만 받을 수 있음
-     * 뿌리기 User : fromUser
-     * 받기 User : toUser
-     * */
-    @Test
-    public void testReceive_fail_2() {
-        long currentTime = TimeAndDateUtil.getCurrentTimeMilliSec();
-        long availableTime = TimeAndDateUtil.getCurrentTimeMilliSec();
-
-        final String token = this.splitEventService.splitRandomly(this.fromUser, this.room, new CreateSplitEventRequest(1000, 3), currentTime);
-
-        // first
-        ResponseEntity firstResponseEntity = this.userSplitEventService.receiveSplitRandomly(this.toUser, this.room, new SplitEventTokenDTO(token), availableTime);
-
-        assertThat(firstResponseEntity.getBody()).isInstanceOf(ReceiveSplitEventResponse.class);
-        ReceiveSplitEventResponse firstResponse = (ReceiveSplitEventResponse) firstResponseEntity.getBody();
-
-        assert firstResponse != null;
-        assert firstResponse.getResultCode() == ResultEnum.OK.getCode();
-        assert firstResponse.getReceiveAmount() >= 0L;
-
-        // second
-        ResponseEntity secondResponseEntity = this.userSplitEventService.receiveSplitRandomly(this.toUser, this.room, new SplitEventTokenDTO(token), availableTime);
-        assertThat(secondResponseEntity.getBody()).isInstanceOf(DefaultResponse.class);
-        DefaultResponse secondResponse = (DefaultResponse) secondResponseEntity.getBody();
-
-        assert secondResponse != null;
-        assert secondResponse.getResultCode() == ResultEnum.SPLITEVENT_ALREADY_APPLY.getCode();
-    }
-
-    /*
-     * 뿌리기 건당 한번만 받을 수 있음
-     * 뿌리기 User : fromUser
-     * 받기 User : toUser
-     * */
-    @Test
-    public void testReceive_fail_3() {
-        long currentTime = TimeAndDateUtil.getCurrentTimeMilliSec();
-        long availableTime = TimeAndDateUtil.getCurrentTimeMilliSec();
-
-        final String token = this.splitEventService.splitRandomly(this.fromUser, this.room, new CreateSplitEventRequest(1000, 3), currentTime);
-
-        // first
-        ResponseEntity firstResponseEntity = this.userSplitEventService.receiveSplitRandomly(this.toUser, this.room, new SplitEventTokenDTO(token), availableTime);
-
-        assertThat(firstResponseEntity.getBody()).isInstanceOf(ReceiveSplitEventResponse.class);
-        ReceiveSplitEventResponse firstResponse = (ReceiveSplitEventResponse) firstResponseEntity.getBody();
-
-        assert firstResponse != null;
-        assert firstResponse.getResultCode() == ResultEnum.OK.getCode();
-        assert firstResponse.getReceiveAmount() >= 0L;
-
-        // second
-        ResponseEntity secondResponseEntity = this.userSplitEventService.receiveSplitRandomly(this.toUser, this.room, new SplitEventTokenDTO(token), availableTime);
-        assertThat(secondResponseEntity.getBody()).isInstanceOf(DefaultResponse.class);
-        DefaultResponse secondResponse = (DefaultResponse) secondResponseEntity.getBody();
-
-        assert secondResponse != null;
-        assert secondResponse.getResultCode() == ResultEnum.SPLITEVENT_ALREADY_APPLY.getCode();
-    }
-
-    /*
      * 뿌리기가 호출된 대화방과 동일한 대화방에 속한 사용자만이 받을 수 있음
      * 뿌리기 User : fromUser
      * 받기 User : notAttedee
      * */
     @Test
-    public void testReceive_fail_4() {
+    public void test_receive_fail_3() {
         long currentTime = TimeAndDateUtil.getCurrentTimeMilliSec();
         long availableTime = TimeAndDateUtil.getCurrentTimeMilliSec();
 
@@ -145,7 +115,7 @@ public class ReceiveServiceTest extends ServiceTest {
      * 받은 시간 : notAvailableTime
      * */
     @Test
-    public void testReceive_fail_5() {
+    public void test_receive_fail_4() {
         long currentTime = TimeAndDateUtil.getCurrentTimeMilliSec();
         long notAvailableTime = currentTime + Policy.SPLITEVENT_EXPIRED_TIME + 1L;
 
