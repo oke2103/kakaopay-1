@@ -1,0 +1,10 @@
+[source,bash]
+----
+$ curl 'https://docs.api.com:8080/api/v1/user/sign-up' -i -X POST \
+    -H 'Content-Type: application/json' \
+    -H 'Accept: application/json' \
+    -d '{
+  "id": 0,
+  "name": "jun"
+}'
+----

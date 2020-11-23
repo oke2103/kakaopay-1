@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>kakaopay</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <groupId>org.springframework.boot</groupId>
+      </plugin>
+      <plugin>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <artifactId>spring-restdocs-asciidoctor</artifactId>
+            <groupId>org.springframework.restdocs</groupId>
+            <version>2.0.2.RELEASE</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <configuration>
+              <backend>html</backend>
+              <doctype>book</doctype>
+            </configuration>
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <id>generate-docs</id>
+            <phase>prepare-package</phase>
+          </execution>
+        </executions>
+        <groupId>org.asciidoctor</groupId>
+        <version>1.5.3</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <configuration>
+              <outputDirectory>
+                ${project.build.outputDirectory}/static/docs
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/generated-docs
+                  </directory>
+                </resource>
+              </resources>
+            </configuration>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <id>copy-resources</id>
+            <phase>prepare-package</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>spring-boot-starter-hateoas</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+    </dependency>
+
+    <!--
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+    </dependency>-->
+
+    <dependency>
+      <artifactId>jjwt-api</artifactId>
+      <groupId>io.jsonwebtoken</groupId>
+      <version>0.11.1</version>
+    </dependency>
+    <dependency>
+      <artifactId>jjwt-impl</artifactId>
+      <groupId>io.jsonwebtoken</groupId>
+      <scope>runtime</scope>
+      <version>0.11.1</version>
+    </dependency>
+    <dependency>
+      <artifactId>jjwt-jackson</artifactId>
+      <groupId>io.jsonwebtoken</groupId> <!-- or jjwt-gson if Gson is preferred -->
+      <scope>runtime</scope>
+      <version>0.11.1</version>
+    </dependency>
+
+    <!-- H2 데이터베이스 -->
+    <dependency>
+      <artifactId>h2</artifactId>
+      <groupId>com.h2database</groupId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>modelmapper</artifactId>
+      <groupId>org.modelmapper</groupId>
+      <version>2.3.1</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>lombok</artifactId>
+      <groupId>org.projectlombok</groupId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>assertj-core</artifactId>
+      <groupId>org.assertj</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>spring-restdocs-mockmvc</artifactId>
+      <groupId>org.springframework.restdocs</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <artifactId>gson</artifactId>
+      <groupId>com.google.code.gson</groupId>
+      <version>2.8.5</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>junit-vintage-engine</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>org.junit.vintage</groupId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <groupId>com.juns</groupId>
+
+  <!-- Inherit defaults from Spring Boot -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <groupId>org.springframework.boot</groupId>
+    <version>2.2.0.RELEASE</version>
+  </parent>
+
+  <!-- Add typical dependencies for a web application -->
+  <properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <!-- Package as an executable jar -->
+  <version>1.0-SNAPSHOT</version>
+
+
+</project>
