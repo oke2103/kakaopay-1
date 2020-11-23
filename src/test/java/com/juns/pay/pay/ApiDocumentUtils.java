@@ -1,4 +1,4 @@
-package com.juns.pay.pay.controller;
+package com.juns.pay.pay;
 
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -10,16 +10,16 @@ import org.springframework.restdocs.operation.preprocess.OperationResponsePrepro
 
 public class ApiDocumentUtils {
 
-    static OperationRequestPreprocessor getDocumentRequest() {
+    public static OperationRequestPreprocessor getDocumentRequest() {
         return preprocessRequest(
-            modifyUris() // (1)
+            modifyUris()
                 .scheme("https")
-                .host("docs.api.com")
+                .host("docs.juns-apis.com")
                 .removePort(),
-            prettyPrint()); // (2)
+            prettyPrint());
     }
 
-    static OperationResponsePreprocessor getDocumentResponse() {
-        return preprocessResponse(prettyPrint()); // (3)
+    public static OperationResponsePreprocessor getDocumentResponse() {
+        return preprocessResponse(prettyPrint());
     }
 }

@@ -12,8 +12,9 @@ public class RndomlyTest {
         while (count > 0) {
             double r = this.splitRandom(amount, count);
             System.out.println(" amount : " + amount + " r : " + r);
-            amount -= (r);
+            amount -= (Double.parseDouble(String.format("%.2f", r)));
             count--;
+            assert r >= 0L;
         }
     }
 
