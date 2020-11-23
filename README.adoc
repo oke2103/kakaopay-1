@@ -76,7 +76,7 @@
 ## ERD
 ++++
 <p align="center">
-  <img width="460" height="300" src="https://user-images.githubusercontent.com/74887350/99963470-2f502e80-2dd5-11eb-89dc-e8f2889021c5.png">
+  <img  src="https://user-images.githubusercontent.com/74887350/99963470-2f502e80-2dd5-11eb-89dc-e8f2889021c5.png">
 </p>
 ++++
 
