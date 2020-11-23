@@ -1,0 +1,45 @@
+
+### Java template
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+### macOS template
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# IntelliJ project files
+.idea
+.idea/*.xml
+*.iml
+out
+gen
+build
+rebel.xml
+
+# Compliled files
+/target/
+**/target
+
+/example/
+
+### Git ###
+# Created by git for backups. To disable backups in Git:
+# $ git config --global mergetool.keepBackup false
+*.orig
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
