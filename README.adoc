@@ -1,0 +1,350 @@
+
+# kakaopay 사전과제
+
+## 개발 환경
+- Java 1.8
+- Maven
+- SpringBoot 2.2.0.RELEASE
+- JPA
+- H2 Database
+- Lombok, JWT, ModelMapper ...
+
+## 상세 구현 요건 및 제약사항 
+- 뿌리기 API 
+  * 뿌릴 금액, 뿌릴 인원을 요청값으로 받습니다.
+  * 뿌리기 요청건에 대한 고유 token을 발급하고 응답값으로 내려주고, token은 3자리 문자열로 구성되며 예측이 불가능해야 합니다.
+- 받기 API
+  * 뿌리기 시 발급된 token을 요청값으로 받습니다.
+  * token에 해당하는 뿌리기 건 중 아직 누구에게도 할당되지 않은 분배건 하나를 API를 호출한 사용자에게 할당하고, 그 금액을 응답값으로 내려줍니다.
+  * 뿌리기당 한 사용자는 한 번만 받을 수 있습니다.
+  * 자신이 뿌리기한 건은 자신이 받을 수 없습니다.
+  * 뿌린기가 호출된 대화방과 동일한 대화방에 속한 사용자만이 받을 수있습니다.
+  * 뿌린 건은 10분간만 유효합니다. 뿌린지 10분이 지난 요청에 대해서는 받기 실패 응답이 내려가야 합니다.
+- 조회 API
+  * 뿌리기 시 발급된 token을 요청값으로 받습니다.
+  * token에 해당하는 뿌리기 건의 현재 상태를 응답값으로 내려줍니다. 현재 상태는 다음의 정보를 포함합니다.
+    뿌린 시각,뿌린 금액,받기 완료된 금액,받기 완료된 정보 ([받은 금액, 받은 사용자 아이디] 리스트)
+  * 뿌린 사람 자신만 조회를 할 수 있습니다. 다른사람의 뿌리기건이나 유효하지 않은 token에 대해서는 조회 실패 응답이 내려가야 합니다.
+  * 뿌린 건에 대한 조회는 7일 동안할 수 있습니다.
+
+
+## 뿌리기 API
+
+1 PUT /api/v1/split/randomly HTTP/1.1
+
+2 Content-Type: application/json
+
+3 Accept: application/json
+
+4 Request Headers
+
+|===
+|Name|Description
+
+|`+X-USER-ID+`
+|사용자 ID
+
+|`+X-ROOM-ID+`
+|방 고유 ID
+
+|===
+
+5 Request body
+
+|===
+|Path|Type|Description
+
+|`+amount+`
+|`+Number+`
+|금액
+
+|`+maxCount+`
+|`+Number+`
+|사용자 수
+
+|===
+
+6 Response body
+
+|===
+|Path|Type|Description
+
+|`+resultCode+`
+|`+Number+`
+|결과코드
+
+|`+resultMessage+`
+|`+String+`
+|결과메시지
+
+|`+token+`
+|`+String+`
+|뿌리기 이벤트 고유 token
+
+|`+detail+`
+|`+String+`
+|상세 메시지
+
+|===
+
+7 Sample
+
+- request
+----
+PUT /api/v1/split/randomly HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+X-ROOM-ID: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb29tSWQiOjEsImlhdCI6MTYwNjEyOTE2MH0.eNZ_yAgdcx4_kiXf0nQCLLqk4sO6wD8a_r4HJ7xoSFQ
+X-USER-ID: 1
+Host: docs.juns-apis.com
+Content-Length: 44
+
+{
+  "amount" : 10000.0,
+  "maxCount" : 5.0
+}
+----
+
+- response
+----
+{
+  "resultCode" : 0,
+  "resultMessage" : "ok",
+  "detail" : "",
+  "token" : "nxx"
+}
+----
+## 받기 API
+
+1 PUT /api/v1/split/receive HTTP/1.1
+
+2 Content-Type: application/json
+
+3 Accept: application/json
+
+4 Request Headers
+
+|===
+|Name|Description
+
+|`+X-USER-ID+`
+|사용자 ID
+
+|`+X-ROOM-ID+`
+|방 고유 ID
+
+|===
+
+5 Request body
+
+|===
+|Path|Type|Description
+
+|`+token+`
+|`+String+`
+|뿌리기 이벤트 고유 token
+
+|===
+
+6 Response body
+
+|===
+|Path|Type|Description
+
+|`+resultCode+`
+|`+Number+`
+|결과코드
+
+|`+resultMessage+`
+|`+String+`
+|결과메시지
+
+|`+detail+`
+|`+String+`
+|상세 메시지
+
+|`+receiveAmount+`
+|`+Number+`
+|받은 금액
+
+|===
+
+7 Sample
+
+- request
+----
+PUT /api/v1/split/receive HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+X-ROOM-ID: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb29tSWQiOjEsImlhdCI6MTYwNjEyOTE2MH0.eNZ_yAgdcx4_kiXf0nQCLLqk4sO6wD8a_r4HJ7xoSFQ
+X-USER-ID: 2
+Host: docs.juns-apis.com
+Content-Length: 21
+
+{
+  "token" : "nxx"
+}
+----
+
+- response
+----
+{
+  "resultCode" : 0,
+  "resultMessage" : "ok",
+  "detail" : "",
+  "receiveAmount" : 344.48
+}
+----
+
+
+
+## 조회 API
+
+1 PUT /api/v1/split/history HTTP/1.1
+
+2 Content-Type: application/json
+
+3 Accept: application/json
+
+4 Request Headers
+
+|===
+|Name|Description
+
+|`+X-USER-ID+`
+|사용자 ID
+
+|`+X-ROOM-ID+`
+|방 고유 ID
+
+|===
+
+5 Request body
+
+|===
+|Path|Type|Description
+
+|`+token+`
+|`+String+`
+|뿌리기 이벤트 고유 token
+
+|===
+
+6 Response body
+
+|===
+|Path|Type|Description
+
+|`+resultCode+`
+|`+Number+`
+|결과코드
+
+|`+resultMessage+`
+|`+String+`
+|결과메시지
+
+|`+detail+`
+|`+String+`
+|상세 메시지
+
+|`+result+`
+|`+SplitEventDTO+`
+|뿌리기 이벤트 정보
+
+|===
+
+** SplitEventDTO
+|===
+|Path|Type|Description
+
+|`+timeCreate+`
+|`+Number+`
+|뿌린 시각 (milliseconds 단위)
+
+|`+amount+`
+|`+Number+`
+|뿌린 금액
+
+|`+receiveAmount+`
+|`+Number+`
+|받기 완료한 금액
+
+|`+userSplitEvents+`
+|`+List<UserSplitEventDTO>+`
+|받기 이벤트 정보 리스트
+
+|===
+
+
+** UserSplitEventDTO
+|===
+|Path|Type|Description
+
+|`+timeCreate+`
+|`+Number+`
+|받은 시각 (milliseconds 단위)
+
+|`+receiveAmount+`
+|`+Number+`
+|받은 금앧
+
+|`+toUser+`
+|`+UserDto+`
+|받은 사용자 정보
+
+|===
+
+** UserDTO
+|===
+|Path|Type|Description
+
+|`+id+`
+|`+Number+`
+|사용자 아이디
+
+|`+name+`
+|`+String+`
+|이름
+
+|===
+
+7 Sample
+
+- request
+----
+POST /api/v1/split/history HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+X-ROOM-ID: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb29tSWQiOjEsImlhdCI6MTYwNjEyODc3MX0.PjtR7U8zTMsuNiyT9hg0Fl3ML5YLx6MFyLxp42LBQpA
+X-USER-ID: 1
+Host: juns-apis.com
+Content-Length: 15
+
+{"token":"Y0D"}
+----
+
+- response
+----
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 348
+
+{
+  "resultCode" : 0,
+  "resultMessage" : "ok",
+  "detail" : "",
+  "result" : {
+    "timeCreate" : 1606128771964,
+    "amount" : 10000.0,
+    "receiveAmount" : 8955.84,
+    "userSplitEvents" : [ {
+      "toUser" : {
+        "id" : 2,
+        "name" : "kka"
+      },
+      "receiveAmount" : 8955.84,
+      "timeReceive" : 1606128772158
+    } ]
+  }
+}
+----
